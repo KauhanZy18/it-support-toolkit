@@ -9,7 +9,7 @@ from typing import Any
 
 
 def coletar_informacoes_sistema() -> dict[str, Any]:
-    """Retorna informações básicas do host, SO, memória e disco disponível."""
+    """Retorna informações básicas do host, sistema operacional e disco disponível."""
     informacoes: dict[str, Any] = {
         "hostname": socket.gethostname(),
         "sistema_operacional": platform.platform(),
