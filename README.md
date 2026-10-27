@@ -59,6 +59,31 @@ python -m src.network_checks
 python -m unittest discover -s tests -v
 ```
 
+
+### Menu interativo / Interactive menu
+
+Na pasta raiz do projeto, execute:
+
+```powershell
+python -m src
+```
+
+No menu, escolha:
+1. Informações do computador
+2. Consulta DNS
+3. Conexão TCP para um host e uma porta
+4. Teste de alcance TCP na porta 80 (não é ICMP)
+5. Testes automatizados
+
+### Atalhos no VS Code
+
+Abra **Terminal → Run Task** e selecione uma das tarefas:
+- `IT Support Toolkit: Abrir menu`
+- `IT Support Toolkit: Executar testes`
+- `IT Support Toolkit: Informações do computador`
+
+As tarefas estão definidas em `.vscode/tasks.json`. O terminal deve estar com o projeto aberto como pasta principal do workspace.
+
 ### Executar script único / Run single script
 
 ```bash
