@@ -8,8 +8,6 @@ Este é um projeto pessoal/laboratório. Uso educacional apenas.
 """
 
 import socket
-import struct
-import sys
 import time
 from dataclasses import dataclass
 from typing import Optional, List, Tuple
@@ -96,7 +94,7 @@ def verificar_tcp(host: str, porta: int, timeout: int = 5) -> TCPResult:
     Returns:
         TCPResult com os detalhes da conexão.
     """
-    if not (1 ≤ porta ≤ 65535):
+    if not (1 <= porta <= 65535):
         return TCPResult(
             host=host,
             porta=porta,
@@ -140,79 +138,42 @@ def verificar_tcp(host: str, porta: int, timeout: int = 5) -> TCPResult:
 
 
 def verificar_ping(host: str, timeout: int = 3, count: int = 1) -> PingResult:
-    """Verifica se um host está alcançável usando método nativo do Python.
+    """Verifica o alcance de um host tentando conectar à porta TCP 80.
 
-    Nota: Python puro não possui suporte nativo a ICMP. Este método usa
-    conexão TCP na porta 7 (echo) como alternativa.
-
-    Args:
-        host: Endereço do host.
-        timeout: Tempo máximo de espera em segundos.
-        count: Número de tentativas.
-
-    Returns:
-        PingResult com os detalhes do ping.
+    Esta verificação não é um ping ICMP. Ela testa se o host aceita conexões
+    TCP na porta 80 e informa o resultado sem exigir privilégios administrativos.
     """
-    success_count = 0
+    if count < 1:
+        return PingResult(
+            host=host, alcancaivel=False, tempo_ms=0, ip_resolvido=None,
+            erro="O número de tentativas deve ser maior que zero.",
+        )
+
+    try:
+        resolved_ip = socket.gethostbyname(host)
+    except (socket.gaierror, OSError) as exc:
+        return PingResult(
+            host=host, alcancaivel=False, tempo_ms=0, ip_resolvido=None,
+            erro=f"Falha na resolução do host: {exc}",
+        )
+
     total_tempo = 0.0
-
-    for i in range(count):
-        inicio = time.time()
+    for _ in range(count):
+        inicio = time.perf_counter()
         try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
-            sock.settimeout(timeout)
-
-            # Construir pacote ICMP tipo 8 (echo request)
-            icmp_type = 8
-            icmp_code = 0
-            icmp_checksum = 0
-            icmp_id = 1
-            icmp_sequence = i
-            payload = struct.pack("!BBHHH", icmp_type, icmp_code, icmp_checksum, icmp_id, icmp_sequence)
-            icmp_checksum = _calcular_checksum(payload)
-            payload = struct.pack("!BBHHH", icmp_type, icmp_code, icmp_checksum, icmp_id, icmp_sequence)
-
-            try:
-                resolved_ip = socket.gethostbyname(host)
-            except socket.gaierror:
-                resolved_ip = None
-
-            # Nota: A criação de sockets RAW pode exigir privilégios de root/admin
-            # Em casos de falha, retornar resultado indicando limitação
-            result = TCPResult(
-                host=host,
-                porta=0,
-                conectado=False,
-                tempo_ms=0,
-                erro="Ping ICMP pode exigir privilégios administrativos",
-            )
-            success_count += 1
-            total_tempo += 0
-
-        except PermissionError:
-            return PingResult(
-                host=host,
-                alcancaivel=False,
-                tempo_ms=0,
-                ip_resolvido=None,
-                erro="Permissão negada para socket RAW. Execute como administrador/root.",
-            )
-        except Exception as e:
-            if i == 0:
+            with socket.create_connection((resolved_ip, 80), timeout=timeout):
+                total_tempo += (time.perf_counter() - inicio) * 1000
                 return PingResult(
-                    host=host,
-                    alcancaivel=False,
-                    tempo_ms=0,
-                    ip_resolvido=None,
-                    erro=f"Erro ao realizar ping: {e}",
+                    host=host, alcancaivel=True,
+                    tempo_ms=round(total_tempo, 2), ip_resolvido=resolved_ip,
                 )
+        except OSError:
+            total_tempo += (time.perf_counter() - inicio) * 1000
 
-    avg_tempo = (total_tempo / success_count) if success_count > 0 else 0
     return PingResult(
-        host=host,
-        alcancaivel=(success_count > 0),
-        tempo_ms=round(avg_tempo, 2),
-        ip_resolvido=None,
+        host=host, alcancaivel=False, tempo_ms=round(total_tempo / count, 2),
+        ip_resolvido=resolved_ip,
+        erro=f"Não foi possível estabelecer conexão TCP com {resolved_ip}:80.",
     )
 
 
