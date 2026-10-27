@@ -77,7 +77,7 @@ def validate_host(host: str) -> bool:
     parts = host.strip().split(".")
     if len(parts) == 4:
         try:
-            return all(0 ≤ int(p) ≤ 255 for p in parts)
+            return all(0 <= int(p) <= 255 for p in parts)
         except ValueError:
             return False
     # Verifica se é um domínio válido (simplificado)
@@ -96,7 +96,7 @@ def validate_port(port: int) -> bool:
         True se entre 1 e 65535, False caso contrário.
     """
     try:
-        return 1 ≤ int(port) ≤ 65535
+        return 1 <= int(port) <= 65535
     except (ValueError, TypeError):
         return False
 
