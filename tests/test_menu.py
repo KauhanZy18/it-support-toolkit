@@ -13,7 +13,7 @@ class MenuTests(unittest.TestCase):
             main()
         self.assertIn("Encerrando", output.getvalue())
 
-    @patch("builtins.input", side_effect=["x", "0"])
+    @patch("builtins.input", side_effect=["x", "", "0"])
     def test_menu_handles_invalid_option(self, mocked_input):
         with redirect_stdout(StringIO()) as output:
             main()
