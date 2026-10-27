@@ -56,8 +56,7 @@ python -m src.system_info
 python -m src.network_checks
 
 # Executar testes
-python -m pytest tests/ -v
-# ou: python -m unittest discover -s tests -v
+python -m unittest discover -s tests -v
 ```
 
 ### Executar script único / Run single script
@@ -87,11 +86,9 @@ Nenhuma dependência externa. Apenas Python 3.10+ com biblioteca padrão.
 Coleta informações básicas do sistema:
 - Nome do host
 - Sistema operacional
-- Endereço IP
+- Endereço IP (quando resolvível)
 - Arquitetura e processador
 - Espaço total e disponível em disco
-- Endereço IP (quando resolvível)
-- Informações de disco
 
 ### `src.network_checks`
 
