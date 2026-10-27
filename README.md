@@ -88,6 +88,7 @@ Coleta informações básicas do sistema:
 - Sistema operacional
 - Endereço IP (quando resolvível)
 - Arquitetura e processador
+- Memória RAM total, disponível, usada e percentual de uso (Windows e Linux)
 - Espaço total e disponível em disco
 
 ### `src.network_checks`
@@ -111,7 +112,8 @@ python -m unittest discover -s tests -v
 
 ## 🚫 Limitações / Limitations
 
-- Apenas biblioteca padrão — nenhuma instalação de pacotes adicionais necessária, mas funcionalidade limitada
+- Apenas biblioteca padrão — nenhuma instalação de pacotes adicionais necessária
+- Coleta de memória RAM implementada para Windows e Linux; em outros sistemas, a informação fica indisponível
 - Scripts de sistema dependem do sistema operacional (resultados podem variar)
 - Verificações de rede dependem de conectividade e configuração do firewall local
 - Não realizar testes automatizados em ambientes de produção — uso apenas laboratorial
