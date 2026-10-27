@@ -45,7 +45,7 @@ it-support-toolkit/
 
 ### Pré-requisitos / Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - Sem dependências externas (usa apenas biblioteca padrão)
 
 ### Executar / Run
@@ -76,7 +76,7 @@ python src/network_checks.py
 # Nenhum / None
 ```
 
-Nenhuma dependência externa. Apenas Python 3.8+ com biblioteca padrão.
+Nenhuma dependência externa. Apenas Python 3.10+ com biblioteca padrão.
 
 ---
 
@@ -88,7 +88,9 @@ Coleta informações básicas do sistema:
 - Nome do host
 - Sistema operacional
 - Endereço IP
-- Informações de memória
+- Arquitetura e processador
+- Espaço total e disponível em disco
+- Endereço IP (quando resolvível)
 - Informações de disco
 
 ### `src.network_checks`
@@ -96,7 +98,7 @@ Coleta informações básicas do sistema:
 Verificações de conectividade:
 - Resolução DNS para domínios
 - Verificação de conectividade TCP em portas específicas
-- Verificação de ping (host reachability)
+- Verificação de alcance TCP na porta 80 (não é ping ICMP)
 
 ---
 
@@ -114,7 +116,7 @@ python -m unittest discover -s tests -v
 
 - Apenas biblioteca padrão — nenhuma instalação de pacotes adicionais necessária, mas funcionalidade limitada
 - Scripts de sistema dependem do sistema operacional (resultados podem variar)
-- Verificações de rede dependem de permissões de rede e configuração de firewall local
+- Verificações de rede dependem de conectividade e configuração do firewall local
 - Não realizar testes automatizados em ambientes de produção — uso apenas laboratorial
 
 ---
